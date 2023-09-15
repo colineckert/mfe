@@ -10,6 +10,7 @@ import Progress from './components/Progress';
 
 const MarketingApp = lazy(() => import('./components/MarketingApp'));
 const AuthApp = lazy(() => import('./components/AuthApp'));
+const DashboardApp = lazy(() => import('./components/DashboardApp'));
 
 const generateClassName = createGenerateClassName({
   productionPrefix: 'co',
@@ -22,11 +23,20 @@ export default () => {
     <BrowserRouter>
       <StylesProvider generateClassName={generateClassName}>
         <div>
-          <Header onSignOut={() => setIsSignedIn(false)} isSignedIn={isSignedIn} />
+          <Header
+            onSignOut={() => setIsSignedIn(false)}
+            isSignedIn={isSignedIn}
+          />
           <Suspense fallback={<Progress />}>
             <Switch>
               <Route path="/auth">
                 <AuthApp onSignIn={() => setIsSignedIn(true)} />
+              </Route>
+              <Route path="/dashboard">
+                {!isSignedIn && (
+                  <AuthApp onSignIn={() => setIsSignedIn(true)} />
+                )}
+                <DashboardApp />
               </Route>
               <Route path="/">
                 <MarketingApp isSignedIn={isSignedIn} />
